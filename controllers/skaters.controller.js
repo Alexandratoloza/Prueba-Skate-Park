@@ -110,9 +110,66 @@ const register = async (req, res) => {
     }
 };
 
+const updateSkater= async(req, res) =>{
+    try {
+        const { email, name, password, anos_experiencia, especialidad } = req.body;
+
+        const user = await skatersModel.update(email, {name, password, anos_experiencia, especialidad});
+
+        return res.json({ok: true, user});
+    } catch (error) {
+        console.error(error);
+        return res.status(error.code).json({ok: false, msg: error.msg});
+    }
+}
+
+const deleteSkater = async(req, res) =>{
+    try {
+
+        const { email } = req.body;
+
+        const user = await skatersModel.remove(email);
+
+        return res.json({ok: true, user});
+    } catch (error) {
+        console.error(error);
+        return res.status(error.code).json({ok: false, msg: error.msg});    
+    }
+}
+
+const getUsers = async(req, res) =>{
+    try {
+        const { email } = req.params;
+        const user = await skatersModel.findByEmail(email);
+        if (!user) {
+            throw { code: 404, msg: 'Usuario no encontrado.' };
+        }
+        return res.json({user});
+    } catch (error) {
+        console.error(error);
+        return res.status(error.code).json({ok: false, msg: error.msg});   
+    }
+}
+
+
+const getAll = async(req, res) =>{
+    try {
+        const users = await skatersModel.findAll();
+        return res.json({users});
+    } catch (error) {
+        console.error(error);
+        return res.status(error.code).json({ok: false, msg: error.msg});   
+    }
+}
+
+
 
 
 export const skatersController = {
     login,
-    register
+    register,
+    updateSkater,
+    deleteSkater, 
+    getUsers,
+    getAll
 };

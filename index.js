@@ -1,36 +1,31 @@
-import 'dotenv/config';
+
 import express from 'express';
+import cookieParser from 'cookie-parser';
+import fileUpload from "express-fileupload";
 import path from 'path';
-import { fileURLToPath } from 'url';
 import skatersRoutes from './routes/skaters.route.js';
 import {verifyTokenJWT } from './middlewares/jwt.middleware.js';
 
 
 const app = express();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = import.meta.dirname;
 
+app.use(cookieParser());
+app.use(fileUpload());
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static(path.join(__dirname,  'public')));
 
-app.use(express.static('public'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use('/skaters', skatersRoutes);
+
+app.get('/protected', verifyTokenJWT, (req, res)=>{
+    res.json({ validToken: true, email: req.email});
+})
 
 app.get('/', (req, res)=>{
-    res.sendFile(__dirname + '/public/index.html');
+    res.sendFile('index.html');
 });
-
-app.get('/login', (req, res) => {
-    res.sendFile(__dirname + '/public/login.html')
-})
-
-app.get('/register', (req, res) => {
-    res.sendFile(__dirname + '/public/registro.html')
-})
-
-
-app.use('/api/v1/skaters', skatersRoutes)
-
 
 
 const PORT = process.env.PORT || 3000;
