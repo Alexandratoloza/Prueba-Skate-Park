@@ -11,7 +11,7 @@
       integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="estilos.css" />
+    <link rel="stylesheet" href="css/estyle.css" />
   </head>
   <body>
     <h1>Skate Park</h1>
@@ -20,7 +20,7 @@
       <h2>Iniciar Sesión</h2>
       <hr class="w-50" />
 
-      <form>
+      <form id="loginForm">
         <div class="form-group">
           <div class="form-group">
             <label>Email</label>
@@ -35,5 +35,35 @@
         <p>¿Aún no tienes cuenta? <a href="#">Regístrate</a></p>
       </form>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+    <script>
+      
+      const loginForm = document.querySelector('#loginForm');
+
+
+      loginForm.addEventListener('submit', async(e)=>{
+        try {
+          e.preventDefault();
+          
+          const email = e.target.email.value;
+          const password = e.target.password.value;
+
+          const { data } = await axios.post('/skaters/login', { email, password});
+          
+          localStorage.setItem('email', email);
+          window.location.href='/profile.html';
+
+        } catch (error) {
+          console.error(error);
+          alert(error);
+        }
+
+
+      });
+
+
+    </script>
+
   </body>
 </html>

@@ -11,7 +11,7 @@
       integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="estilos.css" />
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <h1>Skate Park</h1>
@@ -32,7 +32,7 @@
             <th scope="col">Estado</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tbody">
           <tr>
             <th scope="row">1</th>
             <td><div></div></td>
@@ -59,8 +59,51 @@
           </tr>
         </tbody>
       </table>
-      <a href="#">Iniciar Sesión</a> |
-      <a href="#">Registrarme</a>
+      <a href="/Login.html">Iniciar Sesión</a> |
+      <a href="/Registro.html">Registrarme</a>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+    <script>
+
+      const tbody = document.querySelector('#tbody');
+
+      document.addEventListener('DOMContentLoaded', async()=>{
+        try {
+
+          const { data } = await axios.get('/skater/users');
+          const users = data.users;
+          tbody.innerHTML = "";
+          users.forEach(u=>{
+
+            tbody.innerHTML += `
+              <tr>
+              <th scope="row">${u.id}</th>
+              <td><div style='background-image: url("../imgs/${u.foto}");'></div></td>
+              <td>${u.nombre}</td>
+              <td>${u.anos_experiencia}</td>
+              <td>${u.especialidad}</td>
+              ${ u.estado ? '<td class="text-success font-weight-bold">Aprobado</td>' : '<td class="text-warning font-weight-bold">En revisión</td>'}
+              </tr>
+            
+            `
+
+
+          })
+
+
+
+        } catch (error) {
+          console.error(error);
+        }
+
+
+      });
+
+
+    </script>
+  
   </body>
 </html>
+ 
