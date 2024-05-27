@@ -72,7 +72,7 @@
       document.addEventListener('DOMContentLoaded', async()=>{
         try {
 
-          const { data } = await axios.get('/skater/users');
+          const { data } = await axios.get('/skaters/users');
           const users = data.users;
           tbody.innerHTML = "";
           users.forEach(u=>{

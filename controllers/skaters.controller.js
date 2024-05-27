@@ -59,7 +59,7 @@ const register = async (req, res) => {
         }
 
         const fotonew = foto;
-        const uploadPath = pathjoin(__dirname, '../public/assests/img/', fotonew.nombre)
+        const uploadPath = pathjoin(__dirname, '../public/img/', fotonew.nombre)
 
         fotonew.mv(uploadPath, (error) => {
             if (error) {
@@ -71,7 +71,7 @@ const register = async (req, res) => {
                 });
             }
         
-            // Si no hay errores, continúa con la lógica
+
             res.status(200).json({
                 ok: true,
                 msg: 'Archivo subido exitosamente'
@@ -110,7 +110,7 @@ const register = async (req, res) => {
     }
 };
 
-const updateSkater= async(req, res) =>{
+const updateSkater = async(req, res) =>{
     try {
         const { email, name, password, anos_experiencia, especialidad } = req.body;
 
