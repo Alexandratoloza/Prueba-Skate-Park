@@ -52,7 +52,7 @@
           const { data } = await axios.post('/skaters/login', { email, password});
           
           localStorage.setItem('email', email);
-          window.location.href='/profile.html';
+          window.location.href='/datos.html';
 
         } catch (error) {
           console.error(error);

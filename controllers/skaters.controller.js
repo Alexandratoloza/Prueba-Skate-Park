@@ -1,5 +1,6 @@
 import { skatersModel } from '../models/skaters.model.js';
 import {handleErrorDatabase} from '../database/errors.database.js';
+import {path} from 'path'
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -41,74 +42,75 @@ const login = async (req, res) => {
     }
 
 
-const register = async (req, res) => {
-    try {
-        const { email, nombre, password, anos_experiencia, especialidad, foto } = req.body;
-
-        const file = req.files.foto
-
-        console.log({ email, nombre, password, anos_experiencia, especialidad, foto })
-
-        const existingSkater = await skatersModel.findByEmail(email);
-
-        if (existingSkater) {
-            return res.status(400).json({
-                ok: false,
-                msg: "Usuario ya registrado"
-            });
-        }
-
-        const fotonew = foto;
-        const uploadPath = pathjoin(__dirname, '../public/img/', fotonew.nombre)
-
-        fotonew.mv(uploadPath, (error) => {
-            if (error) {
-                console.error('Error al mover el archivo:', error);
-                return res.status(500).json({
+    const register = async (req, res) => {
+        try {
+            const { email, nombre, password, anos_experiencia, especialidad } = req.body;
+    
+            if (!req.files || !req.files.foto) {
+                return res.status(400).json({
                     ok: false,
-                    msg: 'Error al subir el archivo',
-                    error: error.message
+                    msg: 'No se subió ninguna foto'
                 });
             }
-        
-
-            res.status(200).json({
-                ok: true,
-                msg: 'Archivo subido exitosamente'
+    
+            const file = req.files.foto;
+    
+            console.log({ email, nombre, password, anos_experiencia, especialidad, foto: file.name });
+    
+            const existingSkater = await skatersModel.findByEmail(email);
+    
+            if (existingSkater) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'Usuario ya registrado'
+                });
+            }
+    
+            const uploadPath = path.join(__dirname, '../public/img/', file.name);
+    
+            file.mv(uploadPath, async (error) => {
+                if (error) {
+                    console.error('Error al mover el archivo:', error);
+                    return res.status(500).json({
+                        ok: false,
+                        msg: 'Error al subir el archivo',
+                        error: error.message
+                    });
+                }
+    
+                const hashedPassword = await bcrypt.hash(password, 10);
+    
+                const newSkater = {
+                    email,
+                    nombre,
+                    password: hashedPassword,
+                    anos_experiencia,
+                    especialidad,
+                    foto: file.name
+                };
+    
+                const createdSkater = await skatersModel.create(newSkater);
+    
+                const token = jwt.sign(
+                    { email: createdSkater.email },
+                    process.env.SECRET_JWT,
+                    { expiresIn: '1h' }
+                );
+    
+                return res.status(201).json({
+                    ok: true,
+                    msg: 'Usuario registrado exitosamente',
+                    skater: createdSkater,
+                    token
+                });
             });
-        });
-        
-
-        const hashedPassword = await bcrypt.hash(password, 25);
-
-        const newSkater = {
-            email,
-            nombre,
-            password: hashedPassword,
-            anos_experiencia,
-            especialidad,
-            foto: fotonew.nombre
-        };
-
-        const createdSkater = await skatersModel.create(newSkater);
-
-        const token = jwt.sign(
-            {email: skater.email},
-            process.env.SECRET_JWT,
-            { expiresIn: '1h'}
-        )
-
-        return res.status(201).json({
-            ok: true,
-            msg: "Usuario registrado exitosamente",
-            skater: createdSkater
-        });
-    } catch (error) {
-        console.log(error);
-        const { code, msg } = handleErrorDatabase(error);
-        return res.status(code).json({ ok: false, msg });
-    }
-};
+        } catch (error) {
+            console.log(error);
+            const { code, msg } = handleErrorDatabase(error);
+            return res.status(code).json({ ok: false, msg });
+        }
+    };
+    
 
 const updateSkater = async(req, res) =>{
     try {
