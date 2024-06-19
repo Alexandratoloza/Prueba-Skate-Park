@@ -20,3 +20,4 @@ VALUES
     ('maria.lopez@example.com', 'Maria Lopez', 'password123', 5, 'Street', 'foto1.jpg', TRUE),
     ('juan.perez@example.com', 'Juan Perez', 'securepass456', 10, 'Vert', 'foto2.jpg', TRUE),
     ('ana.gomez@example.com', 'Ana Gomez', 'mypassword789', 3, 'Freestyle', 'foto3.jpg', FALSE);
+    
