@@ -1,6 +1,6 @@
 import { skatersModel } from '../models/skaters.model.js';
 import {handleErrorDatabase} from '../database/errors.database.js';
-import {path} from 'path'
+import path from 'path'
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -125,6 +125,17 @@ const updateSkater = async(req, res) =>{
     }
 }
 
+const verifiedState = async (req, res) => {
+    try{
+        const {email, estado} = req.body;
+        const user = await skatersModel.verifiedState(email, estado)
+        return res.json({ok: true, user});
+    }catch(error){
+        console.log(error)
+        return res.status(error.code).json({ok: false, msg: error.msg});
+    }
+}
+
 const deleteSkater = async(req, res) =>{
     try {
 
@@ -171,6 +182,7 @@ export const skatersController = {
     login,
     register,
     updateSkater,
+    verifiedState,
     deleteSkater, 
     getUsers,
     getAll

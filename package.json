@@ -19,6 +19,7 @@
     "express": "^4.19.2",
     "express-fileupload": "^1.5.0",
     "jsonwebtoken": "^9.0.2",
+    "path": "^0.12.7",
     "pg": "^8.11.5"
   },
   "devDependencies": {

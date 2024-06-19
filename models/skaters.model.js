@@ -68,13 +68,22 @@ const remove = async (email)=>{
     return rows[0];
 }
 
+const verifiedState = async (email, state) => {
+    const query = {
+        text: `UPDATE skaters SET estado = $2 WHERE email = $1 RETURNING *;`,
+        values: [email, state]
+    }
+    const { rows } = await pool.query(query);
+    return rows[0]; }
+
 
 export const skatersModel = {
     findAll,
     findByEmail,
     create,
     update,
-    remove
+    remove,
+    verifiedState,
 
 
 };

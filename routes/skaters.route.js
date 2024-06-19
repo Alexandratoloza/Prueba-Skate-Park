@@ -16,7 +16,7 @@ router.post('/register', skatersController.register);
 
 router.put('/edit', verifyTokenJWT, skatersController.updateSkater);
 router.delete('/delete', verifyTokenJWT, skatersController.deleteSkater);
-
+router.put ('/state', skatersController.verifiedState)
 
 
 

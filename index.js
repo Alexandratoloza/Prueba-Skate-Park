@@ -2,8 +2,8 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import fileUpload from "express-fileupload";
-import path from 'path';
 import skatersRoutes from './routes/skaters.route.js';
+import path from 'path';
 import {verifyTokenJWT } from './middlewares/jwt.middleware.js';
 
 
