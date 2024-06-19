@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -10,7 +9,6 @@
     integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
   <h1>Skate Park</h1>
 
@@ -22,7 +20,7 @@
       <div class="form-group row w-50 m-auto">
         <div class="form-group col-12 col-sm-6">
           <label>Email</label>
-          <input  id="email" class="form-control m-auto" disabled value="tonyhawk@skate.com" />
+          <input id="email" class="form-control m-auto" disabled value="tonyhawk@skate.com" />
         </div>
         <div class="form-group col-12 col-sm-6">
           <label>Nombre</label>
@@ -34,7 +32,7 @@
         </div>
         <div class="form-group col-12 col-sm-6">
           <label>Repita la password</label>
-          <input id="passwordRep"type="password" class="form-control m-auto" value="12345678" />
+          <input id="passwordRep" type="password" class="form-control m-auto" value="12345678" />
         </div>
         <div class="form-group col-12 col-sm-6">
           <label>Años de experiencia</label>
@@ -54,60 +52,85 @@
     </form>
   </div>
 
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
     integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
-
-   const emailSkater = document.querySelector('#email')
-   const nameSkater = document.querySelector('#nombre')
-   const passwordSkater= document.querySelector('#password')
-   const passwordRepSkater = document.querySelector('#passwordRep')
-   const experienciaSkater = document.querySelector('#anos_experiencia')
-   const especialidadSkater = document.querySelector('#especialidad')
-   const updateSkater = document.querySelector('#update')
-   const deleteSkater = document.querySelector('#delete')
-
-
+    const emailSkater = document.querySelector('#email');
+    const nameSkater = document.querySelector('#nombre');
+    const passwordSkater = document.querySelector('#password');
+    const passwordRepSkater = document.querySelector('#passwordRep');
+    const experienciaSkater = document.querySelector('#anos_experiencia');
+    const especialidadSkater = document.querySelector('#especialidad');
+    const updateSkater = document.querySelector('#update');
+    const deleteSkater = document.querySelector('#delete');
 
     document.addEventListener('DOMContentLoaded', async () => {
       try {
+        const response = await axios.get('/protected');
+        if (!response.data.validToken) {
+          window.location.href = '/login.html';
+          return;
+        }
 
-        const  data  = await axios.get('/protected');
-        if(!data.data.validToken){
-            window.location.href = '/login.html';
-            throw { msg: 'Token no encontrado!'}
-          }
+        const email = localStorage.getItem('email');
+        const { data } = await axios.get(`/skaters/user/${email}`);
+        const user = data.user;
 
-          tbody.innerHTML += `
-              <tr>
-              <th scope="row">${u.id}</th>
-              <td><div style='background-image: url("../img/${u.foto}");'></div></td>
-              <td>${u.name}</td>
-              <td>${u.anos_experiencia}</td>
-              <td>${u.especialidad}</td>
-              ${u.estado ? '<td class="text-success font-weight-bold">Aprobado</td>' : '<td class="text-warning font-weight-bold">Procesando</td>'}
-              </tr>
-            
-            `
-
-
-      
-
-
-
+        emailSkater.value = user.email;
+        nameSkater.value = user.name;
+        experienciaSkater.value = user.anos_experiencia;
+        especialidadSkater.value = user.especialidad;
       } catch (error) {
         console.error(error);
+        window.location.href = '/';
       }
-
-
     });
 
+    updateSkater.addEventListener('click', async () => {
+      try {
+        const response = await axios.get('/protected');
+        if (!response.data.validToken) {
+          window.location.href = '/datos.html';
+          return;
+        }
 
+        const email = emailSkater.value.trim();
+        const name = nameSkater.value.trim();
+        const password = passwordSkater.value.trim();
+        const anos_experiencia = experienciaSkater.value.trim();
+        const especialidad = especialidadSkater.value.trim();
+
+        const { data } = await axios.put('/skaters/edit', { email, name, password, anos_experiencia, especialidad });
+        console.log(data);
+        alert('Perfil actualizado correctamente');
+        // Redirigir a datos.html u otra página según necesites
+        window.location.href = '/login.html';
+      } catch (error) {
+        console.error(error);
+        alert(`ERROR: ${error.message}`);
+      }
+    });
+
+    deleteSkater.addEventListener('click', async () => {
+      try {
+        const response = await axios.get('/protected');
+        if (!response.data.validToken) {
+          window.location.href = '/login.html';
+          return;
+        }
+
+        const email = localStorage.getItem('email');
+        await axios.delete('/skaters/delete', { data: { email } });
+        alert('Cuenta eliminada correctamente');
+        
+        window.location.href = '/login.html';
+      } catch (error) {
+        console.error(error);
+        alert(`ERROR: ${error.message}`);
+      }
+    });
   </script>
-
 </body>
-
 </html>
