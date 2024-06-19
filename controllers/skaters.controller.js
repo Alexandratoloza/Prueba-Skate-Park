@@ -10,42 +10,42 @@ const __dirname = path.dirname(__filename);
 
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const skater = await skatersModel.findByEmail(email);
-
-        if (!skater) {
-            return res.status(400).json({
-                ok: false,
-                msg: "Email no registrado"
-            });
-        }
-
-        const isMatch = await bcrypt.compare(password, skater.password);
-        if (!isMatch) {
-            return res.status(400).json({
-                ok: false,
-                msg: "Contraseña incorrecta"
-            });
-        }
-
-        const token = jwt.sign(
-            { email: skater.email },
-            process.env.SECRET_JWT,
-            { expiresIn: '2h' }
-        );
-
-        return res.json({
-            ok: true,
-            token,
-            email: skater.email
+      const { email, password } = req.body;
+      const skater = await skatersModel.findByEmail(email);
+  
+      if (!skater) {
+        return res.status(400).json({
+          ok: false,
+          msg: "Email no registrado"
         });
-
+      }
+  
+      const isMatch = await bcrypt.compare(password, skater.password);
+      if (!isMatch) {
+        return res.status(400).json({
+          ok: false,
+          msg: "Contraseña incorrecta"
+        });
+      }
+  
+      const token = jwt.sign(
+        { email: skater.email },
+        process.env.SECRET_JWT,
+        { expiresIn: '2h' }
+      );
+  
+      return res.json({
+        ok: true,
+        token,
+        email: skater.email
+      });
+  
     } catch (error) {
-        console.error(error);
-        const { code, msg } = handleErrorDatabase(error); 
-        return res.status(code).json({ ok: false, msg });
+      console.error(error);
+      const { code, msg } = handleErrorDatabase(error); 
+      return res.status(code || 500).json({ ok: false, msg: msg || "Internal Server Error" });
     }
-};
+  };
 
 const register = async (req, res) => {
     try {

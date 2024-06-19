@@ -1,69 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-      integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body>
-    <h1>Skate Park</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+    integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <h1>Skate Park</h1>
 
-    <div class="py-5">
-      <h2>Iniciar Sesión</h2>
-      <hr class="w-50" />
+  <div class="py-5">
+    <h2>Iniciar Sesión</h2>
+    <hr class="w-50" />
 
-      <form id="loginForm">
+    <form id="loginForm">
+      <div class="form-group">
         <div class="form-group">
-          <div class="form-group">
-            <label>Email</label>
-            <input class="form-control w-50 m-auto" />
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input class="form-control w-50 m-auto" />
-          </div>
+          <label>Email</label>
+          <input type="email" name="email" class="form-control w-50 m-auto" />
         </div>
-        <button class="btn btn-success mb-3">Ingresar</button>
-        <p>¿Aún no tienes cuenta? <a href="#">Regístrate</a></p>
-      </form>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  
-    <script>
-      
-      const loginForm = document.querySelector('#loginForm');
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" class="form-control w-50 m-auto" />
+        </div>
+      </div>
+      <button class="btn btn-success mb-3">Ingresar</button>
+      <p>¿Aún no tienes cuenta? <a href="/register.html">Regístrate</a></p> <!-- Asegúrate de que esta URL sea correcta -->
+    </form>
+  </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-      loginForm.addEventListener('submit', async(e)=>{
-        try {
-          e.preventDefault();
-          
-          const email = e.target.email.value;
-          const password = e.target.password.value;
+  <script>
+    const loginForm = document.querySelector('#loginForm');
 
-          const { data } = await axios.post('/skaters/login', { email, password});
-          
-          localStorage.setItem('email', email);
-          window.location.href= "/datos.html";
+    loginForm.addEventListener('submit', async (e) => {
+      try {
+        e.preventDefault();
 
-        } catch (error) {
-       //   console.error(error);
-          alert(error);
-        }
+        const email = e.target.email.value;
+        const password = e.target.password.value;
 
+        const { data } = await axios.post('/skaters/login', { email, password });
 
-      });
+        localStorage.setItem('email', email);
+        window.location.href = "/datos.html";
 
-
-    </script>
-
-  </body>
+      } catch (error) {
+        console.error(error);
+        alert(error.response ? error.response.data.msg : error.message);
+      }
+    });
+  </script>
+</body>
 </html>
