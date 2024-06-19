@@ -28,22 +28,21 @@ const findByEmail = async (email) => {
     }
 };
 
-const create = async ({ email, nombre, password, anos_experiencia, especialidad, foto, estado }) => {
+const create = async ({ email, name, password, anos_experiencia, especialidad, foto, estado = false }) => {
     const query = {
         text: `
-        INSERT INTO skaters (email, nombre, password, anos_experiencia, especialidad, foto, estado)
+        INSERT INTO skaters (email, name, password, anos_experiencia, especialidad, foto, estado)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *
         `,
-        values: [email, nombre, password, anos_experiencia, especialidad, foto, estado]
+        values: [email, name, password, anos_experiencia, especialidad, foto, estado]
     };
 
-    try {
+  
         const { rows } = await pool.query(query);
         return rows[0];
-    } catch (error) {
-        throw new Error(`Error al crear el skater: ${error.message}`);
-    }
+   
+    
 };
 
 
